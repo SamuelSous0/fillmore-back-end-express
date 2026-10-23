@@ -1,0 +1,856 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-fillmore-api-unicap-2026",
+    "name": "Fillmore API - UNICAP 2026.2",
+    "description": "Collection oficial da Fillmore API para a disciplina de Aplicações Orientadas a Serviços (AOS 2026.2). Contém endpoints de Autenticação, Rotas Escolares, Alunos, Mensalidades e Operação Diária com preenchimento dinâmico de token JWT.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticacao & Sessao",
+      "item": [
+        {
+          "name": "Sign Up - Motorista",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Silva\",\n  \"email\": \"carlos.motorista@fillmore.com\",\n  \"senha\": \"senhaSegura123\",\n  \"tipo\": \"MOTORISTA\",\n  \"telefone\": \"81999990001\",\n  \"cnh\": \"12345678900\",\n  \"placaVeiculo\": \"PEA-1234\",\n  \"capacidadeVan\": 15,\n  \"chavePix\": \"81999990001\",\n  \"titularPix\": \"Carlos Silva\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sign Up - Responsavel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Mariana Santos\",\n  \"email\": \"mariana.mae@fillmore.com\",\n  \"senha\": \"senhaSegura123\",\n  \"tipo\": \"RESPONSAVEL\",\n  \"telefone\": \"81988880002\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login (Captura Token Automatico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "    pm.environment.set(\"token\", res.token);",
+                  "    pm.collectionVariables.set(\"token\", res.token);",
+                  "}",
+                  "if (res.user) {",
+                  "    pm.environment.set(\"userId\", res.user.id);",
+                  "    pm.collectionVariables.set(\"userId\", res.user.id);",
+                  "    if (res.user.motorista) {",
+                  "        pm.environment.set(\"motoristaId\", res.user.motorista.id);",
+                  "        pm.collectionVariables.set(\"motoristaId\", res.user.motorista.id);",
+                  "    }",
+                  "    if (res.user.responsavel) {",
+                  "        pm.environment.set(\"responsavelId\", res.user.responsavel.id);",
+                  "        pm.collectionVariables.set(\"responsavelId\", res.user.responsavel.id);",
+                  "    }",
+                  "}",
+                  "pm.test(\"Login realizado com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"carlos.motorista@fillmore.com\",\n  \"senha\": \"senhaSegura123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/session",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "session"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter Usuario por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Perfil",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefone\": \"81999998888\",\n  \"capacidadeVan\": 16\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout (Revogar Token)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/session",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "session"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Rotas Escolares (Sammuel)",
+      "item": [
+        {
+          "name": "Listar Rotas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rotas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Rota (Manha)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Rota Boa Viagem -> Colegios Derby\",\n  \"turno\": \"MANHA\",\n  \"pontoInicialLat\": -8.1189,\n  \"pontoInicialLng\": -34.8988,\n  \"pontoFinalLat\": -8.0567,\n  \"pontoFinalLng\": -34.8999,\n  \"distanciaTotalKm\": 12.5,\n  \"tempoEstimadoMin\": 45\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rotas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter Rota por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rotas/{{rotaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas",
+                "{{rotaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Rota",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tempoEstimadoMin\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rotas/{{rotaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas",
+                "{{rotaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Rota",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rotas/{{rotaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas",
+                "{{rotaId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Alunos & Vinculo com Rota (Joao)",
+      "item": [
+        {
+          "name": "Listar Alunos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cadastrar Aluno (Guarda Compartilhada)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lucas Santos\",\n  \"escola\": \"Colegio Santa Maria\",\n  \"responsavelId\": \"{{responsavelId}}\",\n  \"modalidade\": \"IDA_E_VOLTA\",\n  \"enderecoEmbarque\": \"Rua dos Navegantes, 100 - Boa Viagem (Casa da Mae)\",\n  \"enderecoDesembarque\": \"Av. Conselheiro Aguiar, 500 - Boa Viagem (Casa do Pai)\",\n  \"nomeContatoEntrega\": \"Roberto Santos (Pai)\",\n  \"telefoneContatoEntrega\": \"81987654321\",\n  \"diaVencimentoMensalidade\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Alunos da Rota (Relacionamento 1)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rotas/{{rotaId}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas",
+                "{{rotaId}}",
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vincular Aluno a Rota (com checagem de lotacao)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alunoId\": \"{{alunoId}}\",\n  \"tipoTrajeto\": \"IDA\",\n  \"ordemNaRota\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rotas/{{rotaId}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas",
+                "{{rotaId}}",
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Desvincular Aluno da Rota",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rotas/{{rotaId}}/alunos/{{alunoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas",
+                "{{rotaId}}",
+                "alunos",
+                "{{alunoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Mensalidades & Ciencia de Pagamento (Paulo)",
+      "item": [
+        {
+          "name": "Mensalidades do Aluno (Relacionamento 2)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/mensalidades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "mensalidades"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Mensalidade",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mesReferencia\": 10,\n  \"anoReferencia\": 2026,\n  \"valor\": 380.00,\n  \"dataVencimento\": \"2026-10-10\",\n  \"status\": \"PENDENTE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/mensalidades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "mensalidades"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Extrato de Pendencias do Responsavel (Ciencia do Debito)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/responsaveis/{{responsavelId}}/mensalidades/pendentes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "responsaveis",
+                "{{responsavelId}}",
+                "mensalidades",
+                "pendentes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Registrar Pagamento Realizado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PAGO\",\n  \"dataPagamento\": \"2026-10-10T14:30:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/mensalidades/{{mensalidadeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "mensalidades",
+                "{{mensalidadeId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Presenca, Viagens & Notificacoes (Edmundo)",
+      "item": [
+        {
+          "name": "Presenca Diaria do Aluno",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/presencas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "presencas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Registrar Embarque (Presenca)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": \"2026-11-03\",\n  \"turno\": \"MANHA\",\n  \"embarcou\": true,\n  \"horarioEmbarque\": \"06:45\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/presencas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "presencas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancelar Viagem pelo Responsavel",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": \"2026-11-04\",\n  \"turnoCancelado\": \"MANHA\",\n  \"motivoCancelamento\": \"Consulta medica no primeiro horario\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/viagens",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "viagens"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar Notificacoes do Aluno",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/notificacoes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "notificacoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Disparar Lembrete de Cobranca (1 Clique)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/mensalidades/{{mensalidadeId}}/cobrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "mensalidades",
+                "{{mensalidadeId}}",
+                "cobrar"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4001",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "motoristaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "responsavelId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rotaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "alunoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "mensalidadeId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
