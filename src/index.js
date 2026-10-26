@@ -10,6 +10,7 @@ import {
   errorMiddleware,
 } from "./middlewares/index.js";
 import * as routes from "./routes/index.js";
+import { userService } from "./services/index.js";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.get("/", (req, res) => {
 
 app.use("/session", routes.session);
 app.use("/users", routes.user);
+app.use("/rotas", routes.rota);
 
 // 7. Rota não encontrada (404)
 app.use(notFoundMiddleware);
@@ -61,10 +63,62 @@ const startServer = () => {
   });
 };
 
+const seedRotas = async () => {
+  const rotasCount = await models.Rota.count();
+  if (rotasCount >= 2) {
+    return;
+  }
+
+  let motorista = await models.Motorista.findOne();
+  if (!motorista) {
+    const novoUsuarioMotorista = await userService.createUser({
+      nome: "Carlos Silva",
+      email: "carlos.motorista@fillmore.com",
+      senha: "senhaSegura123",
+      tipo: "MOTORISTA",
+      telefone: "81999990001",
+      cnh: "12345678900",
+      placaVeiculo: "PEA-1234",
+      capacidadeVan: 15,
+      chavePix: "81999990001",
+      titularPix: "Carlos Silva",
+    });
+    motorista = novoUsuarioMotorista.motorista;
+  }
+
+  await models.Rota.bulkCreate([
+    {
+      motoristaId: motorista.id,
+      nome: "Rota Boa Viagem → Colégio Santa Maria",
+      turno: "MANHA",
+      pontoInicialLat: -8.1189,
+      pontoInicialLng: -34.8988,
+      pontoFinalLat: -8.1255,
+      pontoFinalLng: -34.9032,
+      distanciaTotalKm: 8.5,
+      tempoEstimadoMin: 35,
+    },
+    {
+      motoristaId: motorista.id,
+      nome: "Rota Colégio Santa Maria → Boa Viagem",
+      turno: "TARDE",
+      pontoInicialLat: -8.1255,
+      pontoInicialLng: -34.9032,
+      pontoFinalLat: -8.1189,
+      pontoFinalLng: -34.8988,
+      distanciaTotalKm: 9.2,
+      tempoEstimadoMin: 40,
+    },
+  ]);
+};
+
 if (syncDatabase) {
-  sequelize.sync({ force: eraseDatabaseOnSync }).then(() => {
-    startServer();
-  });
+  sequelize
+    .sync({ force: eraseDatabaseOnSync, alter: !eraseDatabaseOnSync })
+    .then(async () => {
+      await seedRotas();
+      startServer();
+    });
 } else {
   startServer();
 }
