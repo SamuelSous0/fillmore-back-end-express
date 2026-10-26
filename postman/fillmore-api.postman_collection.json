@@ -208,6 +208,24 @@
       "item": [
         {
           "name": "Listar Rotas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (Array.isArray(res) && res.length > 0 && res[0].id) {",
+                  "    pm.environment.set(\"rotaId\", res[0].id);",
+                  "    pm.collectionVariables.set(\"rotaId\", res[0].id);",
+                  "}",
+                  "pm.test(\"Listagem de rotas retornou 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -233,6 +251,24 @@
         },
         {
           "name": "Criar Rota (Manha)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.id) {",
+                  "    pm.environment.set(\"rotaId\", res.id);",
+                  "    pm.collectionVariables.set(\"rotaId\", res.id);",
+                  "}",
+                  "pm.test(\"Rota da manha criada com sucesso (201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -254,6 +290,59 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nome\": \"Rota Boa Viagem -> Colegios Derby\",\n  \"turno\": \"MANHA\",\n  \"pontoInicialLat\": -8.1189,\n  \"pontoInicialLng\": -34.8988,\n  \"pontoFinalLat\": -8.0567,\n  \"pontoFinalLng\": -34.8999,\n  \"distanciaTotalKm\": 12.5,\n  \"tempoEstimadoMin\": 45\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rotas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rotas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Rota (Tarde)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.id) {",
+                  "    pm.environment.set(\"rotaId\", res.id);",
+                  "    pm.collectionVariables.set(\"rotaId\", res.id);",
+                  "}",
+                  "pm.test(\"Rota da tarde criada com sucesso (201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Rota Colegios Derby -> Boa Viagem\",\n  \"turno\": \"TARDE\",\n  \"pontoInicialLat\": -8.0567,\n  \"pontoInicialLng\": -34.8999,\n  \"pontoFinalLat\": -8.1189,\n  \"pontoFinalLng\": -34.8988,\n  \"distanciaTotalKm\": 13.0,\n  \"tempoEstimadoMin\": 50\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/rotas",
