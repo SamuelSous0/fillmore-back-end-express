@@ -450,6 +450,24 @@
       "item": [
         {
           "name": "Listar Alunos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (Array.isArray(res) && res.length > 0 && res[0].id) {",
+                  "    pm.environment.set(\"alunoId\", res[0].id);",
+                  "    pm.collectionVariables.set(\"alunoId\", res[0].id);",
+                  "}",
+                  "pm.test(\"Listagem de alunos retornou 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -474,7 +492,64 @@
           }
         },
         {
+          "name": "Buscar Aluno por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Aluno localizado com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}"
+              ]
+            }
+          }
+        },
+        {
           "name": "Cadastrar Aluno (Guarda Compartilhada)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.id) {",
+                  "    pm.environment.set(\"alunoId\", res.id);",
+                  "    pm.collectionVariables.set(\"alunoId\", res.id);",
+                  "}",
+                  "pm.test(\"Aluno cadastrado com sucesso (201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -509,7 +584,109 @@
           }
         },
         {
+          "name": "Atualizar Aluno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Aluno atualizado com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeContatoEntrega\": \"Roberto Santos (Pai - Atualizado)\",\n  \"telefoneContatoEntrega\": \"81999998888\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar Filhos do Responsavel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Filhos do responsavel retornados com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/responsaveis/{{responsavelId}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "responsaveis",
+                "{{responsavelId}}",
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
           "name": "Alunos da Rota (Relacionamento 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Alunos da rota retornados com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -537,6 +714,19 @@
         },
         {
           "name": "Vincular Aluno a Rota (com checagem de lotacao)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Aluno vinculado a rota com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -574,6 +764,19 @@
         },
         {
           "name": "Desvincular Aluno da Rota",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Aluno desvinculado da rota (204)\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -594,6 +797,45 @@
               "path": [
                 "rotas",
                 "{{rotaId}}",
+                "alunos",
+                "{{alunoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Aluno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Aluno excluido com sucesso (204)\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
                 "alunos",
                 "{{alunoId}}"
               ]

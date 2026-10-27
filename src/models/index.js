@@ -6,6 +6,7 @@ import getMotoristaModel from "./motorista.js";
 import getResponsavelModel from "./responsavel.js";
 import getTokenRevogadoModel from "./tokenRevogado.js";
 import getRotaModel from "./rota.js";
+import getAlunoModel from "./aluno.js";
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
@@ -19,6 +20,7 @@ const models = {
   Responsavel: getResponsavelModel(sequelize, Sequelize),
   TokenRevogado: getTokenRevogadoModel(sequelize, Sequelize),
   Rota: getRotaModel(sequelize, Sequelize),
+  Aluno: getAlunoModel(sequelize, Sequelize),
 };
 
 Object.keys(models).forEach((key) => {
