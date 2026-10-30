@@ -13,7 +13,7 @@ import * as routes from "./routes/index.js";
 
 const app = express();
 
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 
 // 1. Segurança de cabeçalhos HTTP
 app.use(helmet());
@@ -42,6 +42,7 @@ app.get("/", (req, res) => {
 
 app.use("/session", routes.session);
 app.use("/users", routes.user);
+app.use("/messages", routes.message);
 app.use("/rotas", routes.rota);
 app.use("/alunos", routes.aluno);
 app.use("/responsaveis", routes.responsavel);

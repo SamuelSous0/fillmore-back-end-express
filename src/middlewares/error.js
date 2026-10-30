@@ -1,3 +1,4 @@
+import { ZodError } from "zod";
 import { AppError } from "../utils/index.js";
 
 const errorMiddleware = (err, req, res, next) => {
@@ -7,6 +8,19 @@ const errorMiddleware = (err, req, res, next) => {
     console.error(err.stack);
   } else {
     console.error(`${err.name || "Error"}: ${err.message}`);
+  }
+
+  if (err instanceof ZodError) {
+    const errors = err.issues.map((issue) => {
+      const field = issue.path.join(".");
+      return `${field}: ${issue.message}`;
+    });
+
+    return res.status(400).send({
+      status: "fail",
+      message: errors.join("; "),
+      errors,
+    });
   }
 
   if (err instanceof AppError) {
