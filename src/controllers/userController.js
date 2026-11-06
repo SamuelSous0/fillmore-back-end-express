@@ -19,8 +19,18 @@ const getUser = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { nome, email, senha, tipo, telefone, cnh, placaVeiculo, capacidadeVan } =
-    req.body || {};
+  const {
+    nome,
+    email,
+    senha,
+    tipo,
+    telefone,
+    cnh,
+    placaVeiculo,
+    capacidadeVan,
+    chavePix,
+    titularPix,
+  } = req.body || {};
 
   if (!nome || !email || !senha) {
     throw new AppError("Nome, e-mail e senha são campos obrigatórios.", 400);
@@ -35,6 +45,8 @@ const createUser = async (req, res) => {
     cnh,
     placaVeiculo,
     capacidadeVan,
+    chavePix,
+    titularPix,
   });
 
   return res.status(201).send(user);
