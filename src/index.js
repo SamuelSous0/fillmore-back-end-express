@@ -65,12 +65,14 @@ const startServer = () => {
   });
 };
 
-if (syncDatabase) {
-  sequelize.sync({ force: eraseDatabaseOnSync }).then(() => {
+if (!process.env.VERCEL) {
+  if (syncDatabase) {
+    sequelize.sync({ force: eraseDatabaseOnSync }).then(() => {
+      startServer();
+    });
+  } else {
     startServer();
-  });
-} else {
-  startServer();
+  }
 }
 
 export default app;

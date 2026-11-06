@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { userService, tokenService } from "../services/index.js";
@@ -30,6 +31,7 @@ const login = async (req, res) => {
     secret,
     {
       expiresIn: "24h",
+      jwtid: randomUUID(),
     },
   );
 

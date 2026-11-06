@@ -4,10 +4,8 @@ import { authLimiterMiddleware, authMiddleware } from "../middlewares/index.js";
 
 const router = Router();
 
-// Aplica limite rígido de 5 tentativas por 15 minutos nas rotas de sessão
-router.use(authLimiterMiddleware);
-
-router.post("/", sessionController.login);
+// Aplica limite de tentativas de autenticação apenas no login
+router.post("/", authLimiterMiddleware, sessionController.login);
 router.delete("/", authMiddleware, sessionController.logout);
 router.get("/", authMiddleware, sessionController.getSession);
 
