@@ -8,6 +8,9 @@ import getTokenRevogadoModel from "./tokenRevogado.js";
 import getRotaModel from "./rota.js";
 import getAlunoModel from "./aluno.js";
 import getMensalidadeModel from "./mensalidade.js";
+import getPresencaModel from "./presenca.js";
+import getViagemDiariaModel from "./viagemDiaria.js";
+import getNotificacaoModel from "./notificacao.js";
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
@@ -23,6 +26,9 @@ const models = {
   Rota: getRotaModel(sequelize, Sequelize),
   Aluno: getAlunoModel(sequelize, Sequelize),
   Mensalidade: getMensalidadeModel(sequelize, Sequelize),
+  Presenca: getPresencaModel(sequelize, Sequelize),
+  ViagemDiaria: getViagemDiariaModel(sequelize, Sequelize),
+  Notificacao: getNotificacaoModel(sequelize, Sequelize),
 };
 
 Object.keys(models).forEach((key) => {

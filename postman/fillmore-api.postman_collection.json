@@ -983,7 +983,7 @@
       "name": "5. Presenca, Viagens & Notificacoes (Edmundo)",
       "item": [
         {
-          "name": "Presenca Diaria do Aluno",
+          "name": "Listar Presencas do Aluno (Check-list Diario)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1011,6 +1011,24 @@
         },
         {
           "name": "Registrar Embarque (Presenca)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.environment.set(\"presencaId\", res.id);",
+                  "    pm.collectionVariables.set(\"presencaId\", res.id);",
+                  "}",
+                  "pm.test(\"Status code é 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1047,7 +1065,146 @@
           }
         },
         {
+          "name": "Consultar Presenca por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/presencas/{{presencaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "presencas",
+                "{{presencaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Presenca (Embarque)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"embarcou\": true,\n  \"horarioEmbarque\": \"06:50\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/presencas/{{presencaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "presencas",
+                "{{presencaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Registro de Presenca",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/presencas/{{presencaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "presencas",
+                "{{presencaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar Cancelamentos de Viagem do Aluno",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/viagens",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "viagens"
+              ]
+            }
+          }
+        },
+        {
           "name": "Cancelar Viagem pelo Responsavel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.environment.set(\"viagemId\", res.id);",
+                  "    pm.collectionVariables.set(\"viagemId\", res.id);",
+                  "}",
+                  "pm.test(\"Status code é 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1068,7 +1225,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"data\": \"2026-11-04\",\n  \"turnoCancelado\": \"MANHA\",\n  \"motivoCancelamento\": \"Consulta medica no primeiro horario\"\n}"
+              "raw": "{\n  \"data\": \"2026-11-04\",\n  \"turnoCancelado\": \"MANHA\",\n  \"motivoCancelamento\": \"Consulta médica pela manhã\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/alunos/{{alunoId}}/viagens",
@@ -1079,6 +1236,100 @@
                 "alunos",
                 "{{alunoId}}",
                 "viagens"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar Cancelamento de Viagem por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/viagens/{{viagemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "viagens",
+                "{{viagemId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Motivo de Cancelamento de Viagem",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivoCancelamento\": \"Consulta médica remarcada para as 08:30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/viagens/{{viagemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "viagens",
+                "{{viagemId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reativar Viagem (Excluir Cancelamento)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/viagens/{{viagemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "viagens",
+                "{{viagemId}}"
               ]
             }
           }
@@ -1111,6 +1362,149 @@
           }
         },
         {
+          "name": "Enviar Aviso para o Aluno (Notificacao)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.environment.set(\"notificacaoId\", res.id);",
+                  "    pm.collectionVariables.set(\"notificacaoId\", res.id);",
+                  "}",
+                  "pm.test(\"Status code é 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"VAN_CHEGANDO\",\n  \"mensagem\": \"A van escolar está se aproximando do endereço de embarque (previsão: 5 minutos).\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/notificacoes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "notificacoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar Notificacao por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/notificacoes/{{notificacaoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "notificacoes",
+                "{{notificacaoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Marcar Notificacao como Lida",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/notificacoes/{{notificacaoId}}/lida",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notificacoes",
+                "{{notificacaoId}}",
+                "lida"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar Notificacoes Pendentes do Responsavel",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/responsaveis/{{responsavelId}}/notificacoes?lida=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "responsaveis",
+                "{{responsavelId}}",
+                "notificacoes"
+              ],
+              "query": [
+                {
+                  "key": "lida",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
           "name": "Disparar Lembrete de Cobranca (1 Clique)",
           "request": {
             "auth": {
@@ -1135,6 +1529,34 @@
                 "mensalidades",
                 "{{mensalidadeId}}",
                 "cobrar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Notificacao",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/alunos/{{alunoId}}/notificacoes/{{notificacaoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "{{alunoId}}",
+                "notificacoes",
+                "{{notificacaoId}}"
               ]
             }
           }

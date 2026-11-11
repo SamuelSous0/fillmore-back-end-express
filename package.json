@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon --exec babel-node src/index.js",
     "build": "babel src -d dist",
+    "seed:edmundo": "node src/scripts/seedEdmundo.js",
     "start": "node dist/index.js"
   },
   "keywords": [
