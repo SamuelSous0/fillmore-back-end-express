@@ -5,3 +5,7 @@ export { default as aluno } from "./aluno.js";
 export { default as responsavel } from "./responsavel.js";
 export { default as message } from "./message.js";
 export { default as mensalidade } from "./mensalidade.js";
+export { default as presenca } from "./presenca.js";
+export { default as viagem } from "./viagem.js";
+export { default as notificacao } from "./notificacao.js";
+

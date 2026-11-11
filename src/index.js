@@ -47,6 +47,9 @@ app.use("/rotas", routes.rota);
 app.use("/alunos", routes.aluno);
 app.use("/responsaveis", routes.responsavel);
 app.use("/", routes.mensalidade);
+app.use("/", routes.presenca);
+app.use("/", routes.viagem);
+app.use("/", routes.notificacao);
 
 // 7. Rota não encontrada (404)
 app.use(notFoundMiddleware);
