@@ -79,11 +79,39 @@ const deleteRota = async (req, res) => {
   return res.status(204).send();
 };
 
+// Recalcula e salva a melhor sequência de paradas (Rota Inteligente)
+const otimizarRota = async (req, res) => {
+  const motoristaId = ensureMotorista(req);
+  const data = req.body?.data || req.query?.data;
+
+  const resultado = await rotaService.otimizarRota(req.params.id, motoristaId, {
+    data,
+    salvarNoBanco: true,
+  });
+
+  return res.status(200).send(resultado);
+};
+
+// Obtém o trajeto inteligente do dia (excluindo alunos com viagem cancelada na data)
+const getTrajetoOtimizado = async (req, res) => {
+  const motoristaId =
+    req.user?.tipo === "MOTORISTA" ? req.user?.motorista?.id : null;
+  const data = req.query?.data;
+
+  const resultado = await rotaService.otimizarRota(req.params.id, motoristaId, {
+    data,
+    salvarNoBanco: Boolean(motoristaId),
+  });
+
+  return res.status(200).send(resultado);
+};
+
 export default {
   getRotas,
   getRota,
   createRota,
   updateRota,
   deleteRota,
+  otimizarRota,
+  getTrajetoOtimizado,
 };
-
