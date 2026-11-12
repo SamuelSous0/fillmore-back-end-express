@@ -4,21 +4,19 @@ import { authMiddleware } from "../middlewares/index.js";
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
 // Listar cancelamentos de viagem do aluno
-router.get("/alunos/:alunoId/viagens", viagemController.getViagensDoAluno);
+router.get("/alunos/:alunoId/viagens", authMiddleware, viagemController.getViagensDoAluno);
 
 // Consultar cancelamento por ID
-router.get("/alunos/:alunoId/viagens/:id", viagemController.getViagem);
+router.get("/alunos/:alunoId/viagens/:id", authMiddleware, viagemController.getViagem);
 
 // Registrar cancelamento de viagem pelo responsável
-router.post("/alunos/:alunoId/viagens", viagemController.createViagem);
+router.post("/alunos/:alunoId/viagens", authMiddleware, viagemController.createViagem);
 
 // Atualizar cancelamento de viagem
-router.put("/alunos/:alunoId/viagens/:id", viagemController.updateViagem);
+router.put("/alunos/:alunoId/viagens/:id", authMiddleware, viagemController.updateViagem);
 
 // Excluir cancelamento de viagem (desfaz o cancelamento)
-router.delete("/alunos/:alunoId/viagens/:id", viagemController.deleteViagem);
+router.delete("/alunos/:alunoId/viagens/:id", authMiddleware, viagemController.deleteViagem);
 
 export default router;
