@@ -152,6 +152,11 @@ const associarAlunoARota = async (alunoId, rotaId, options = {}) => {
   }
 
   await aluno.update(updateData);
+
+  if (options.ordemNaRota === undefined) {
+    await rotaService.otimizarRota(rota.id, null, { salvarNoBanco: true });
+  }
+
   return await getAlunoById(aluno.id);
 };
 
@@ -176,6 +181,8 @@ const desassociarAlunoDaRota = async (alunoId, rotaId) => {
   }
 
   await aluno.update(updateData);
+  await rotaService.otimizarRota(rotaId, null, { salvarNoBanco: true });
+
   return await getAlunoById(aluno.id);
 };
 
