@@ -1,3 +1,5 @@
+import argon2 from "argon2";
+
 const getUserModel = (sequelize, { DataTypes }) => {
   const User = sequelize.define(
     "user",
@@ -50,8 +52,24 @@ const getUserModel = (sequelize, { DataTypes }) => {
     },
     {
       tableName: "users",
+      hooks: {
+        beforeCreate: async (user) => {
+          if (user.senha && !user.senha.startsWith("$argon2")) {
+            user.senha = await argon2.hash(user.senha);
+          }
+        },
+        beforeUpdate: async (user) => {
+          if (user.changed("senha") && user.senha && !user.senha.startsWith("$argon2")) {
+            user.senha = await argon2.hash(user.senha);
+          }
+        },
+      },
     },
   );
+
+  User.prototype.validatePassword = async function (senha) {
+    return await argon2.verify(this.senha, senha);
+  };
 
   User.prototype.toJSON = function () {
     const values = { ...this.get() };

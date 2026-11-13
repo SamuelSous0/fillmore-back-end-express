@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import argon2 from "argon2";
 import models, { sequelize } from "../models/index.js";
 
 const userIncludes = [
@@ -37,8 +37,7 @@ const createUser = async ({
   chavePix,
   titularPix,
 }) => {
-  const saltRounds = 10;
-  const hashSenha = await bcrypt.hash(senha, saltRounds);
+  const hashSenha = await argon2.hash(senha);
 
   // Executa em transação para garantir criação atômica do usuário e do seu perfil
   return await sequelize.transaction(async (t) => {
@@ -94,7 +93,7 @@ const updateUser = async (id, data) => {
   if (data.nome !== undefined) userUpdateData.nome = data.nome;
   if (data.telefone !== undefined) userUpdateData.telefone = data.telefone;
   if (data.senha) {
-    userUpdateData.senha = await bcrypt.hash(data.senha, 10);
+    userUpdateData.senha = await argon2.hash(data.senha);
   }
 
   await sequelize.transaction(async (t) => {

@@ -14,7 +14,7 @@ API RESTful desenvolvida em Node.js e Express para o gerenciamento logístico e 
 
 - **Runtime e Framework:** Node.js (ES Modules), Express 5
 - **Banco de Dados e ORM:** PostgreSQL (NeonDB), Sequelize
-- **Autenticação e Segurança:** JWT (`jsonwebtoken`), `bcrypt`, `helmet`, `cors`, `express-rate-limit`
+- **Autenticação e Segurança:** JWT (`jsonwebtoken`), `argon2`, `helmet`, `cors`, `express-rate-limit`
 - **Validação de Dados:** `zod`
 - **Hospedagem:** Vercel
 
@@ -38,8 +38,7 @@ API RESTful desenvolvida em Node.js e Express para o gerenciamento logístico e 
    PORT=4001
    DATABASE_URL="postgresql://usuario:senha@host/neondb?sslmode=require"
    JWT_SECRET="sua_chave_secreta"
-   JWT_EXPIRES_IN="1h"
-   BCRYPT_ROUNDS=10
+   JWT_EXPIRES_IN="24h"
    ```
 
 3. Inicie o servidor (a sincronização com o banco é feita automaticamente na inicialização):

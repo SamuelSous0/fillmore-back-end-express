@@ -21,7 +21,7 @@
   "author": "Samuel, Sammuel, Joao, Paulo, Edmundo",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "argon2": "^0.41.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^5.0.0",

@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import bcrypt from "bcrypt";
+import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { userService, tokenService } from "../services/index.js";
 import { AppError } from "../utils/index.js";
@@ -16,12 +16,13 @@ const login = async (req, res) => {
     throw new AppError("Credenciais inválidas.", 401);
   }
 
-  const isPasswordValid = await bcrypt.compare(senha, user.senha);
+  const isPasswordValid = await argon2.verify(user.senha, senha);
   if (!isPasswordValid) {
     throw new AppError("Credenciais inválidas.", 401);
   }
 
   const secret = process.env.JWT_SECRET || "default_jwt_secret";
+  const expiresIn = process.env.JWT_EXPIRES_IN || "24h";
   const token = jwt.sign(
     {
       id: user.id,
@@ -30,7 +31,7 @@ const login = async (req, res) => {
     },
     secret,
     {
-      expiresIn: "24h",
+      expiresIn,
       jwtid: randomUUID(),
     },
   );
