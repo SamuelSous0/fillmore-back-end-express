@@ -71,6 +71,10 @@
                   "    pm.environment.set(\"token\", res.token);",
                   "    pm.collectionVariables.set(\"token\", res.token);",
                   "}",
+                  "if (res.refreshToken) {",
+                  "    pm.environment.set(\"refreshToken\", res.refreshToken);",
+                  "    pm.collectionVariables.set(\"refreshToken\", res.refreshToken);",
+                  "}",
                   "if (res.user) {",
                   "    pm.environment.set(\"userId\", res.user.id);",
                   "    pm.collectionVariables.set(\"userId\", res.user.id);",
@@ -172,6 +176,54 @@
               "path": [
                 "users",
                 "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Renovar Sessao (Refresh Token + Rotacao)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "    pm.environment.set(\"token\", res.token);",
+                  "    pm.collectionVariables.set(\"token\", res.token);",
+                  "}",
+                  "if (res.refreshToken) {",
+                  "    pm.environment.set(\"refreshToken\", res.refreshToken);",
+                  "    pm.collectionVariables.set(\"refreshToken\", res.refreshToken);",
+                  "}",
+                  "pm.test(\"Sessao renovada e token rotacionado com sucesso (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/session/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "session",
+                "refresh"
               ]
             }
           }
@@ -1749,6 +1801,11 @@
     },
     {
       "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
       "value": "",
       "type": "string"
     },

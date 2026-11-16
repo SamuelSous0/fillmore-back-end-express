@@ -20,7 +20,7 @@ API RESTful desenvolvida em Node.js e Express para o gerenciamento logístico e 
 
 ## Funcionalidades Principais
 
-- **Autenticação e Usuários:** Cadastro de motoristas e responsáveis, login com JWT, controle de sessão e revogação de tokens (logout).
+- **Autenticação e Usuários:** Cadastro de motoristas e responsáveis, login com JWT (Access Token), sessão persistente com Refresh Tokens e rotação automática de tokens (com detecção de reuso por família de tokens) e revogação de sessão no logout.
 - **Gestão de Rotas e Rota Inteligente:** Cadastro de rotas por turno, controle de capacidade máxima da van e otimização automática da ordem de paradas por proximidade geográfica (fórmula de Haversine), ignorando alunos com ausência registrada no dia.
 - **Gestão de Alunos:** Cadastro de alunos vinculados a responsáveis e rotas, com suporte a endereços distintos de embarque e desembarque (guarda compartilhada).
 - **Controle de Mensalidades:** Geração de cobranças mensais, atualização automática de vencimento (`ATRASADO`), baixa de pagamento e consulta de pendências com dados Pix do motorista.
@@ -38,7 +38,9 @@ API RESTful desenvolvida em Node.js e Express para o gerenciamento logístico e 
    PORT=4001
    DATABASE_URL="postgresql://usuario:senha@host/neondb?sslmode=require"
    JWT_SECRET="sua_chave_secreta"
-   JWT_EXPIRES_IN="24h"
+   JWT_EXPIRES_IN="15m"
+   JWT_REFRESH_SECRET="sua_chave_secreta_refresh"
+   JWT_REFRESH_EXPIRES_IN="7d"
    ```
 
 3. Inicie o servidor (a sincronização com o banco é feita automaticamente na inicialização):
@@ -50,7 +52,7 @@ API RESTful desenvolvida em Node.js e Express para o gerenciamento logístico e 
 
 | Recurso | Endpoints |
 | :--- | :--- |
-| **Autenticação e Usuários** | `POST /users`, `POST /session`, `DELETE /session`, `GET /users`, `GET /users/:userId`, `PUT /users/:userId`, `DELETE /users/:userId` |
+| **Autenticação e Usuários** | `POST /users`, `POST /session`, `POST /session/refresh`, `GET /session`, `DELETE /session`, `GET /users`, `GET /users/:userId`, `PUT /users/:userId`, `DELETE /users/:userId` |
 | **Rotas Escolares** | `GET /rotas`, `POST /rotas`, `GET /rotas/:rotaId`, `PUT /rotas/:rotaId`, `DELETE /rotas/:rotaId`, `POST /rotas/:rotaId/otimizar`, `GET /rotas/:rotaId/trajeto` |
 | **Alunos** | `GET /alunos`, `POST /alunos`, `GET /alunos/:alunoId`, `PUT /alunos/:alunoId`, `DELETE /alunos/:alunoId`, `GET /responsaveis/:responsavelId/alunos`, `GET /rotas/:rotaId/alunos`, `POST /rotas/:rotaId/alunos`, `DELETE /rotas/:rotaId/alunos/:alunoId` |
 | **Mensalidades** | `GET /alunos/:alunoId/mensalidades`, `POST /alunos/:alunoId/mensalidades`, `GET /alunos/:alunoId/mensalidades/:mensalidadeId`, `PUT /alunos/:alunoId/mensalidades/:mensalidadeId`, `PATCH /alunos/:alunoId/mensalidades/:mensalidadeId/pagamento`, `DELETE /alunos/:alunoId/mensalidades/:mensalidadeId`, `GET /responsaveis/:responsavelId/mensalidades/pendentes` |

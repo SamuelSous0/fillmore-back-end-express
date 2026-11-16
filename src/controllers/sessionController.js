@@ -1,6 +1,4 @@
-import { randomUUID } from "crypto";
 import argon2 from "argon2";
-import jwt from "jsonwebtoken";
 import { userService, tokenService } from "../services/index.js";
 import { AppError } from "../utils/index.js";
 
@@ -21,31 +19,36 @@ const login = async (req, res) => {
     throw new AppError("Credenciais inválidas.", 401);
   }
 
-  const secret = process.env.JWT_SECRET || "default_jwt_secret";
-  const expiresIn = process.env.JWT_EXPIRES_IN || "24h";
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      tipo: user.tipo,
-    },
-    secret,
-    {
-      expiresIn,
-      jwtid: randomUUID(),
-    },
-  );
+  const { token, refreshToken } = await tokenService.generateAuthTokens(user);
 
   return res.status(200).send({
     user,
     token,
+    refreshToken,
   });
+};
+
+const refresh = async (req, res) => {
+  const { refreshToken } = req.body || {};
+
+  if (!refreshToken) {
+    throw new AppError("Refresh token é obrigatório.", 400);
+  }
+
+  const sessionData = await tokenService.rotateRefreshToken(refreshToken);
+
+  return res.status(200).send(sessionData);
 };
 
 const logout = async (req, res) => {
   if (req.token) {
     await tokenService.revokeToken(req.token, req.tokenPayload?.exp);
   }
+
+  await tokenService.revokeRefreshTokens({
+    usuarioId: req.user?.id,
+    refreshToken: req.body?.refreshToken,
+  });
 
   return res.status(204).send();
 };
@@ -60,6 +63,7 @@ const getSession = async (req, res) => {
 
 export default {
   login,
+  refresh,
   logout,
   getSession,
 };

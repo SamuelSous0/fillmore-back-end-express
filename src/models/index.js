@@ -5,6 +5,7 @@ import getUserModel from "./user.js";
 import getMotoristaModel from "./motorista.js";
 import getResponsavelModel from "./responsavel.js";
 import getTokenRevogadoModel from "./tokenRevogado.js";
+import getRefreshTokenModel from "./refreshToken.js";
 import getRotaModel from "./rota.js";
 import getAlunoModel from "./aluno.js";
 import getMensalidadeModel from "./mensalidade.js";
@@ -23,6 +24,7 @@ const models = {
   Motorista: getMotoristaModel(sequelize, Sequelize),
   Responsavel: getResponsavelModel(sequelize, Sequelize),
   TokenRevogado: getTokenRevogadoModel(sequelize, Sequelize),
+  RefreshToken: getRefreshTokenModel(sequelize, Sequelize),
   Rota: getRotaModel(sequelize, Sequelize),
   Aluno: getAlunoModel(sequelize, Sequelize),
   Mensalidade: getMensalidadeModel(sequelize, Sequelize),

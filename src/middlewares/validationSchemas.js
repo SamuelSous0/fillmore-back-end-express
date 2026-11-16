@@ -51,3 +51,12 @@ export const messageIdParamSchema = z.object({
     messageId: z.string().uuid("Identificador inválido (UUID v4 esperado)"),
   }),
 });
+
+// Validação para renovação e rotação de sessão (POST /session/refresh)
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z
+      .string({ error: "Refresh token é obrigatório" })
+      .min(1, "Refresh token é obrigatório"),
+  }),
+});

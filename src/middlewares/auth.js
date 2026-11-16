@@ -19,6 +19,13 @@ const authMiddleware = async (req, res, next) => {
   const secret = process.env.JWT_SECRET || "default_jwt_secret";
   const decoded = jwt.verify(token, secret);
 
+  if (decoded.type === "refresh") {
+    throw new AppError(
+      "Refresh token não pode ser utilizado para autenticar requisições diretas.",
+      401,
+    );
+  }
+
   const user = await userService.getUserById(decoded.id);
   if (!user) {
     throw new AppError("Usuário associado a este token não foi encontrado.", 401);

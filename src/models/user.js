@@ -80,6 +80,7 @@ const getUserModel = (sequelize, { DataTypes }) => {
   User.associate = (models) => {
     User.hasOne(models.Motorista, { foreignKey: "usuarioId", as: "motorista", onDelete: "CASCADE" });
     User.hasOne(models.Responsavel, { foreignKey: "usuarioId", as: "responsavel", onDelete: "CASCADE" });
+    User.hasMany(models.RefreshToken, { foreignKey: "usuarioId", as: "refreshTokens", onDelete: "CASCADE" });
   };
 
   User.findByEmail = async (email) => {
