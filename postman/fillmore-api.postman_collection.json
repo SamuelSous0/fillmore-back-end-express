@@ -872,7 +872,25 @@
                 "mensalidades"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (Array.isArray(res) && res.length > 0 && res[0].id) {",
+                  "    pm.environment.set(\"mensalidadeId\", res[0].id);",
+                  "    pm.collectionVariables.set(\"mensalidadeId\", res[0].id);",
+                  "}",
+                  "pm.test(\"Status code é 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
         },
         {
           "name": "Criar Mensalidade",
@@ -1577,31 +1595,46 @@
     },
     {
       "key": "userId",
-      "value": "",
+      "value": "40d3e994-5efd-4fee-b771-b597046e4f00",
       "type": "string"
     },
     {
       "key": "motoristaId",
-      "value": "",
+      "value": "40d3e994-5efd-4fee-b771-b597046e4f00",
       "type": "string"
     },
     {
       "key": "responsavelId",
-      "value": "",
+      "value": "0cc3bdc1-5aa8-4c08-8d84-ac2e8e64e040",
       "type": "string"
     },
     {
       "key": "rotaId",
-      "value": "",
+      "value": "15e13701-e381-4958-a043-e35723abced6",
       "type": "string"
     },
     {
       "key": "alunoId",
-      "value": "",
+      "value": "99c71c54-cf2e-4298-92b8-c33a03ce0556",
       "type": "string"
     },
     {
       "key": "mensalidadeId",
+      "value": "fd1233e3-dbe5-43c4-8bfe-86c18111fa5e",
+      "type": "string"
+    },
+    {
+      "key": "presencaId",
+      "value": "8135f459-fdc4-45e7-9ba0-779c5225b2ad",
+      "type": "string"
+    },
+    {
+      "key": "viagemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notificacaoId",
       "value": "",
       "type": "string"
     }
