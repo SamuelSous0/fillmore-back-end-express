@@ -1067,7 +1067,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"data\": \"2026-11-03\",\n  \"turno\": \"MANHA\",\n  \"embarcou\": true,\n  \"horarioEmbarque\": \"06:45\"\n}"
+              "raw": "{\n  \"data\": \"2026-11-18\",\n  \"turno\": \"MANHA\",\n  \"embarcou\": true,\n  \"horarioEmbarque\": \"06:45\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/alunos/{{alunoId}}/presencas",
