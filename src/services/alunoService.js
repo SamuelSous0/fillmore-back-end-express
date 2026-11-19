@@ -69,8 +69,8 @@ const createAluno = async (data) => {
   return await getAlunoById(aluno.id);
 };
 
-const updateAluno = async (id, data) => {
-  const aluno = await models.Aluno.findByPk(id);
+const updateAluno = async (id, data, existingAluno = null) => {
+  const aluno = existingAluno || (await models.Aluno.findByPk(id));
   if (!aluno) {
     return null;
   }
@@ -115,8 +115,8 @@ const updateAluno = async (id, data) => {
   return await getAlunoById(id);
 };
 
-const deleteAluno = async (id) => {
-  const aluno = await models.Aluno.findByPk(id);
+const deleteAluno = async (id, existingAluno = null) => {
+  const aluno = existingAluno || (await models.Aluno.findByPk(id));
   if (!aluno) {
     return false;
   }

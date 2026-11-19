@@ -11,7 +11,7 @@ const getAlunos = async (req, res) => {
 };
 
 const getAluno = async (req, res) => {
-  const aluno = await alunoService.getAlunoById(req.params.id);
+  const aluno = req.aluno || (await alunoService.getAlunoById(req.params.id));
   if (!aluno) {
     throw new AppError("Aluno não encontrado.", 404);
   }
@@ -93,7 +93,7 @@ const createAluno = async (req, res) => {
 };
 
 const updateAluno = async (req, res) => {
-  const existing = await alunoService.getAlunoById(req.params.id);
+  const existing = req.aluno || (await alunoService.getAlunoById(req.params.id));
   if (!existing) {
     throw new AppError("Aluno não encontrado.", 404);
   }
@@ -106,12 +106,16 @@ const updateAluno = async (req, res) => {
     throw new AppError("Acesso não autorizado a dados de outro responsável.", 403);
   }
 
-  const aluno = await alunoService.updateAluno(req.params.id, req.body || {});
+  const aluno = await alunoService.updateAluno(
+    req.params.id,
+    req.body || {},
+    existing,
+  );
   return res.status(200).send(aluno);
 };
 
 const deleteAluno = async (req, res) => {
-  const existing = await alunoService.getAlunoById(req.params.id);
+  const existing = req.aluno || (await alunoService.getAlunoById(req.params.id));
   if (!existing) {
     throw new AppError("Aluno não encontrado.", 404);
   }
@@ -124,7 +128,7 @@ const deleteAluno = async (req, res) => {
     throw new AppError("Acesso não autorizado a dados de outro responsável.", 403);
   }
 
-  await alunoService.deleteAluno(req.params.id);
+  await alunoService.deleteAluno(req.params.id, existing);
   return res.status(204).send();
 };
 

@@ -20,7 +20,7 @@ API RESTful desenvolvida em Node.js e Express para o gerenciamento logístico e 
 
 ## Funcionalidades Principais
 
-- **Autenticação e Usuários:** Cadastro de motoristas e responsáveis, login com JWT (Access Token), sessão persistente com Refresh Tokens e rotação automática de tokens (com detecção de reuso por família de tokens) e revogação de sessão no logout.
+- **Autenticação, Controle de Acesso (RBAC) e Usuários:** Cadastro de motoristas e responsáveis, login com JWT (Access Token), sessão persistente com Refresh Tokens e rotação automática de tokens (com detecção de reuso por família de tokens), revogação de sessão no logout, Controle de Acesso Baseado em Papéis (`restrictTo`) e middlewares de validação de propriedade (`isUserOwner`, `isAlunoOwner`, `isResponsavelOwner`).
 - **Gestão de Rotas e Rota Inteligente:** Cadastro de rotas por turno, controle de capacidade máxima da van e otimização automática da ordem de paradas por proximidade geográfica (fórmula de Haversine), ignorando alunos com ausência registrada no dia.
 - **Gestão de Alunos:** Cadastro de alunos vinculados a responsáveis e rotas, com suporte a endereços distintos de embarque e desembarque (guarda compartilhada).
 - **Controle de Mensalidades:** Geração de cobranças mensais, atualização automática de vencimento (`ATRASADO`), baixa de pagamento e consulta de pendências com dados Pix do motorista.

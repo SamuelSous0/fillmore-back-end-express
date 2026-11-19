@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import models, { sequelize } from "../models/index.js";
+import { AppError } from "../utils/index.js";
 
 const userIncludes = [
   { model: models.Motorista, as: "motorista" },
@@ -80,7 +81,18 @@ const createUser = async ({
   });
 };
 
-const updateUser = async (id, data) => {
+const updateUser = async (id, data, actor = null) => {
+  if (
+    actor &&
+    (data.tipo !== undefined || data.role !== undefined) &&
+    actor.role !== "ADMIN"
+  ) {
+    throw new AppError(
+      "Apenas administradores podem alterar perfis de acesso.",
+      403,
+    );
+  }
+
   const user = await models.User.findByPk(id, {
     include: userIncludes,
   });
@@ -112,6 +124,13 @@ const updateUser = async (id, data) => {
       if (Object.keys(motoristaUpdate).length > 0) {
         await user.motorista.update(motoristaUpdate, { transaction: t });
       }
+    }
+
+    if (data.senha && models.RefreshToken) {
+      await models.RefreshToken.update(
+        { revogado: true },
+        { where: { usuarioId: id, revogado: false }, transaction: t },
+      );
     }
   });
 

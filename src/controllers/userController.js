@@ -7,7 +7,7 @@ const getUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  if (req.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId && req.user.role !== "ADMIN") {
     throw new AppError("Acesso não autorizado aos dados de outro usuário.", 403);
   }
 
@@ -53,11 +53,22 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  if (req.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId && req.user.role !== "ADMIN") {
     throw new AppError("Acesso não autorizado aos dados de outro usuário.", 403);
   }
 
-  const user = await userService.updateUser(req.params.userId, req.body || {});
+  const body = req.body || {};
+  if (
+    (body.tipo !== undefined || body.role !== undefined) &&
+    req.user.role !== "ADMIN"
+  ) {
+    throw new AppError(
+      "Apenas administradores podem alterar perfis de acesso.",
+      403,
+    );
+  }
+
+  const user = await userService.updateUser(req.params.userId, body, req.user);
   if (!user) {
     throw new AppError("Usuário não encontrado.", 404);
   }
@@ -66,7 +77,7 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  if (req.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId && req.user.role !== "ADMIN") {
     throw new AppError("Acesso não autorizado aos dados de outro usuário.", 403);
   }
 
